@@ -1,8 +1,13 @@
 import os
+from dotenv import load_dotenv
 import time
+import sys
+from pathlib import Path
 
-CAMINHO_ORIGEM = r'C:\yt-dlp\associate'
-CAMINHO_SAIDA = r'C:\yt-dlp\associate\convertido'
+load_dotenv()
+
+CAMINHO_ORIGEM = Path(os.getenv('CAMINHO_ORIGEM'))
+CAMINHO_SAIDA = Path(os.getenv('CAMINHO_SAIDA'))
 
 os.makedirs(CAMINHO_SAIDA, exist_ok=True)
 
@@ -11,6 +16,10 @@ arquivos = [
     for arquivo in os.listdir(CAMINHO_ORIGEM)
     if arquivo[-4:] == '.mp4'
 ]
+
+print(arquivos)
+
+sys.exit()
 
 # for i in os.listdir(CAMINHO_ORIGEM):
 #     print(i)
