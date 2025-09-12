@@ -17,9 +17,7 @@ arquivos = [
     if arquivo[-4:] == '.mp4'
 ]
 
-print(arquivos)
-
-sys.exit()
+# print(arquivos)
 
 # for i in os.listdir(CAMINHO_ORIGEM):
 #     print(i)
@@ -27,17 +25,23 @@ sys.exit()
 # print('ola mundo.mp4'[-4:])
 
 for item in arquivos:
-    print('iniciando conversao', item+'...')
+    print('Iniciando checagem do', item+'...')
+
+    if os.path.exists(os.path.join(CAMINHO_SAIDA, item+'.mp4')):
+        print(f'Arquivo {item}.mp4 já existe, pulando para o próximo!')
+    
+    else:
+        print('iniciando conversao', item+'...')
 
     # os.system(f'ffmpeg -i {os.path.join(CAMINHO_ORIGEM, item+".f136.mp4")} -i {os.path.join(CAMINHO_ORIGEM, item+".f251.webm")} -c copy \
     #            {os.path.join(CAMINHO_SAIDA, item+".mp4")}')
 
     # print(os.path.join(CAMINHO_SAIDA, item+".mp4"))
     
-    os.system(f'ffmpeg -i "'+os.path.join(CAMINHO_ORIGEM, item+".f137.mp4")+'" -i "'+os.path.join(CAMINHO_ORIGEM, item+".f251.webm")+ \
-'" -c:v copy -c:a aac -b:a 192k "'+os.path.join(CAMINHO_SAIDA, item+".mp4")+'"')
+#     os.system(f'ffmpeg -i "'+os.path.join(CAMINHO_ORIGEM, item+".f137.mp4")+'" -i "'+os.path.join(CAMINHO_ORIGEM, item+".f251.webm")+ \
+# '" -c:v copy -c:a aac -b:a 192k "'+os.path.join(CAMINHO_SAIDA, item+".mp4")+'"')
     
-    time.sleep(30)
+#     time.sleep(30)
 
 # for i in arquivos:
 #     print(i, ' : ', os.path.exists(os.path.join(CAMINHO_ORIGEM, i+'.f137.mp4')))
