@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import time
 import sys
 from pathlib import Path
+from datetime import datetime
 
 load_dotenv()
 
@@ -17,6 +18,8 @@ arquivos = [
     if arquivo[-4:] == '.mp4'
 ]
 
+data = datetime.now().strftime("%d-%m-%y")
+
 # print(arquivos)
 
 # for i in os.listdir(CAMINHO_ORIGEM):
@@ -24,22 +27,34 @@ arquivos = [
 
 # print('ola mundo.mp4'[-4:])
 
-for item in arquivos:
-    print('Iniciando checagem do', item+'...')
+for indice, arquivo in enumerate(arquivos):
+    if indice == 0:
+        with open(os.path.join(CAMINHO_SAIDA, f'log-{data}.txt'), 'a', encoding='utf8') as arquivo_log:
+            arquivo_log.write(f'Iniciando conversão {datetime.now().strftime("%H:%M:%S")}'+'='*50+'\n\n')
 
-    if os.path.exists(os.path.join(CAMINHO_SAIDA, item+'.mp4')):
-        print(f'Arquivo {item}.mp4 já existe, pulando para o próximo!')
+    print('Iniciando checagem do', arquivo+'...')
+
+    if os.path.exists(os.path.join(CAMINHO_SAIDA, arquivo+'.mp4')):
+        print(f'Arquivo {arquivo}.mp4 já existe, pulando para o próximo!')
+
+        with open(os.path.join(CAMINHO_SAIDA, f'log-{data}.txt'), 'a', encoding='utf8') as arquivo_log:
+            arquivo_log.write(f'{arquivo}.mp4 já existe na pasta, pulou para o próximo! \n')
+            arquivo_log.write('-'*80+'\n')
     
     else:
-        print('iniciando conversao', item+'...')
+        print('iniciando conversao', arquivo+'...')
 
-    # os.system(f'ffmpeg -i {os.path.join(CAMINHO_ORIGEM, item+".f136.mp4")} -i {os.path.join(CAMINHO_ORIGEM, item+".f251.webm")} -c copy \
-    #            {os.path.join(CAMINHO_SAIDA, item+".mp4")}')
+    if indice == len(arquivos)-1:
+        with open(os.path.join(CAMINHO_SAIDA, f'log-{data}.txt'), 'a', encoding='utf8') as arquivo_log:
+            arquivo_log.write('\n')
 
-    # print(os.path.join(CAMINHO_SAIDA, item+".mp4"))
+    # os.system(f'ffmpeg -i {os.path.join(CAMINHO_ORIGEM, arquivo+".f136.mp4")} -i {os.path.join(CAMINHO_ORIGEM, arquivo+".f251.webm")} -c copy \
+    #            {os.path.join(CAMINHO_SAIDA, arquivo+".mp4")}')
+
+    # print(os.path.join(CAMINHO_SAIDA, arquivo+".mp4"))
     
-#     os.system(f'ffmpeg -i "'+os.path.join(CAMINHO_ORIGEM, item+".f137.mp4")+'" -i "'+os.path.join(CAMINHO_ORIGEM, item+".f251.webm")+ \
-# '" -c:v copy -c:a aac -b:a 192k "'+os.path.join(CAMINHO_SAIDA, item+".mp4")+'"')
+#     os.system(f'ffmpeg -i "'+os.path.join(CAMINHO_ORIGEM, arquivo+".f137.mp4")+'" -i "'+os.path.join(CAMINHO_ORIGEM, arquivo+".f251.webm")+ \
+# '" -c:v copy -c:a aac -b:a 192k "'+os.path.join(CAMINHO_SAIDA, arquivo+".mp4")+'"')
     
 #     time.sleep(30)
 
