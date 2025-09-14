@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 import time
-import sys
 from pathlib import Path
 from datetime import datetime
 
@@ -18,7 +17,15 @@ arquivos = [
     if arquivo[-4:] == '.mp4'
 ]
 
-data = datetime.now().strftime("%d-%m-%y")
+def hora_atual():
+    return datetime.now().strftime("%H:%M:%S")
+
+def caminho_log():
+    data = datetime.now().strftime("%d-%m-%y")
+
+    caminho = os.path.join(CAMINHO_SAIDA, f'log-{data}.txt')
+
+    return caminho
 
 # print(arquivos)
 
@@ -29,23 +36,27 @@ data = datetime.now().strftime("%d-%m-%y")
 
 for indice, arquivo in enumerate(arquivos):
     if indice == 0:
-        with open(os.path.join(CAMINHO_SAIDA, f'log-{data}.txt'), 'a', encoding='utf8') as arquivo_log:
-            arquivo_log.write(f'Iniciando conversão {datetime.now().strftime("%H:%M:%S")}'+'='*50+'\n\n')
+        with open(caminho_log(), 'a', encoding='utf8') as arquivo_log:
+            arquivo_log.write(f'Iniciando conversão {hora_atual()}'+'='*50+'\n\n')
 
     print('Iniciando checagem do', arquivo+'...')
 
     if os.path.exists(os.path.join(CAMINHO_SAIDA, arquivo+'.mp4')):
-        print(f'Arquivo {arquivo}.mp4 já existe, pulando para o próximo!')
+        print(f'<Arquivo {arquivo}.mp4> já existe, pulando para o próximo!')
 
-        with open(os.path.join(CAMINHO_SAIDA, f'log-{data}.txt'), 'a', encoding='utf8') as arquivo_log:
-            arquivo_log.write(f'{arquivo}.mp4 já existe na pasta, pulou para o próximo! \n')
+        with open(caminho_log(), 'a', encoding='utf8') as arquivo_log:
+            arquivo_log.write(f'[{hora_atual()}] <{arquivo}.mp4> já existe na pasta, pulou para o próximo! \n')
             arquivo_log.write('-'*80+'\n')
     
     else:
-        print('iniciando conversao', arquivo+'...')
+        print(f'iniciando conversao <{arquivo}>...')
+
+        with open(caminho_log(), 'a', encoding='utf8') as arquivo_log:
+            arquivo_log.write(f'[{hora_atual()}] gerando <{arquivo}.mp4>\n')
+            arquivo_log.write('_'*80+'\n')
 
     if indice == len(arquivos)-1:
-        with open(os.path.join(CAMINHO_SAIDA, f'log-{data}.txt'), 'a', encoding='utf8') as arquivo_log:
+        with open(caminho_log(), 'a', encoding='utf8') as arquivo_log:
             arquivo_log.write('\n')
 
     # os.system(f'ffmpeg -i {os.path.join(CAMINHO_ORIGEM, arquivo+".f136.mp4")} -i {os.path.join(CAMINHO_ORIGEM, arquivo+".f251.webm")} -c copy \
