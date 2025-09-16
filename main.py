@@ -11,28 +11,43 @@ CAMINHO_SAIDA = Path(os.getenv('CAMINHO_SAIDA'))
 
 os.makedirs(CAMINHO_SAIDA, exist_ok=True)
 
-arquivos = [
-    arquivo.replace('.f137.mp4', '')
-    for arquivo in os.listdir(CAMINHO_ORIGEM)
-    if arquivo[-4:] == '.mp4'
-]
-
-def hora_atual():
+def hora_atual() -> str:
     return datetime.now().strftime("%H:%M:%S")
 
-def caminho_log():
+def caminho_log() -> str:
     data = datetime.now().strftime("%d-%m-%y")
 
     caminho = os.path.join(CAMINHO_SAIDA, f'log-{data}.txt')
 
     return caminho
 
-# print(arquivos)
+def retorna_extensao(arquivo: str, qtd_extensao: int) -> str:
+    # qtd_extensao 1 = apenas a ultima extensao ex: .mp4
+    # qtd_extensao 2 = ultima e penultima ex: .f136.mp4
+    if '.' in arquivo:
+        arquivo_dividido = arquivo.split('.')
 
-# for i in os.listdir(CAMINHO_ORIGEM):
-#     print(i)
+        extensao = '.'+arquivo_dividido[-1]
 
-# print('ola mundo.mp4'[-4:])
+        if len(arquivo_dividido) > 2:
+            extensao_extensao = '.'+arquivo_dividido[-2]+extensao
+
+        else:
+            extensao_extensao = None
+
+        if qtd_extensao == 1:
+            return extensao
+
+        return extensao_extensao
+    
+    return None
+
+
+arquivos = [
+    arquivo.replace(retorna_extensao(arquivo, 2), '')
+    for arquivo in os.listdir(CAMINHO_ORIGEM)
+    if arquivo[-4:] == '.mp4'
+]
 
 for indice, arquivo in enumerate(arquivos):
     if indice == 0:
@@ -51,9 +66,23 @@ for indice, arquivo in enumerate(arquivos):
     else:
         print(f'iniciando conversao <{arquivo}>...')
 
+        try:
+            os.system(f'ffmpeg -i "'+os.path.join(CAMINHO_ORIGEM, arquivo+".f136.mp4")+'" -i "'+os.path.join(CAMINHO_ORIGEM, arquivo+".f251.webm")+ \
+            '" -c:v copy -c:a aac -b:a 192k "'+os.path.join(CAMINHO_SAIDA, arquivo+".mp4")+'"')
+
+            texto_log = f'[{hora_atual()}] gerando <{arquivo}.mp4>\n'
+
+            tempo = 30
+        
+        except Exception as erro:
+            texto_log = erro
+            tempo = 0
+
         with open(caminho_log(), 'a', encoding='utf8') as arquivo_log:
-            arquivo_log.write(f'[{hora_atual()}] gerando <{arquivo}.mp4>\n')
+            arquivo_log.write(texto_log)
             arquivo_log.write('_'*80+'\n')
+
+        time.sleep(tempo)
 
     if indice == len(arquivos)-1:
         with open(caminho_log(), 'a', encoding='utf8') as arquivo_log:
@@ -66,8 +95,6 @@ for indice, arquivo in enumerate(arquivos):
     
 #     os.system(f'ffmpeg -i "'+os.path.join(CAMINHO_ORIGEM, arquivo+".f137.mp4")+'" -i "'+os.path.join(CAMINHO_ORIGEM, arquivo+".f251.webm")+ \
 # '" -c:v copy -c:a aac -b:a 192k "'+os.path.join(CAMINHO_SAIDA, arquivo+".mp4")+'"')
-    
-#     time.sleep(30)
 
 # for i in arquivos:
 #     print(i, ' : ', os.path.exists(os.path.join(CAMINHO_ORIGEM, i+'.f137.mp4')))
